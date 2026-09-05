@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Marhoapuyor Studio — Games & Websites</title>
+  <meta name="description" content="We build games, websites, playable demos, and ad campaigns that grow players and revenue. Book a free strategy call." />
+  <link rel="stylesheet" href="/css/styles.css" />
+  <link rel="icon" href="/assets/logo.svg" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="/">
+        <img src="/assets/logo.svg" alt="Marhoapuyor Studio logo" class="logo" />
+        <span class="brand-text">Marhoapuyor Studio</span>
+      </a>
+      <nav class="nav">
+        <a href="#services">Services</a>
+        <a href="#portfolio">Portfolio</a>
+        <a href="#how">How it works</a>
+        <a href="#contact" class="btn">Get a Free Call</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container hero-inner">
+        <div class="hero-copy">
+          <h1>We build games, websites & ads that players love</h1>
+          <p class="lead">From playable demos to conversion-focused websites and ad campaigns — we handle design, development, and marketing so you can grow faster.</p>
+          <div class="cta-row">
+            <a href="#contact" class="btn primary">Get a Free Strategy Call</a>
+            <a href="#portfolio" class="btn ghost">See Demo</a>
+          </div>
+        </div>
+        <div class="hero-media">
+          <img src="/assets/hero-mockup.svg" alt="Website and game mockup" />
+        </div>
+      </div>
+    </section>
+
+    <section id="services" class="section">
+      <div class="container">
+        <h2>Our Services</h2>
+        <div class="grid services-grid">
+          <div class="card">
+            <h3>Website & Landing Pages</h3>
+            <p>Responsive marketing sites and landing pages built for conversions and discoverability.</p>
+          </div>
+          <div class="card">
+            <h3>Playable Demos</h3>
+            <p>Small HTML5 demos to showcase gameplay — perfect for publishers, press, and players.</p>
+          </div>
+          <div class="card">
+            <h3>Ad Campaigns</h3>
+            <p>Search, social, and display campaigns with creative assets and targeting that drives installs.</p>
+          </div>
+          <div class="card">
+            <h3>Analytics & Optimization</h3>
+            <p>Tracking, A/B testing, and optimization to scale what works.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="portfolio" class="section">
+      <div class="container">
+        <h2>Portfolio — Playable Demo</h2>
+        <p>Try a small playable demo below — built with plain JavaScript and Canvas.</p>
+        <div class="demo-wrap">
+          <canvas id="gameCanvas" width="640" height="360" aria-label="Playable demo"></canvas>
+          <div class="demo-controls">
+            <button id="restartBtn" class="btn">Restart</button>
+            <a class="btn" href="#contact">Request a Custom Demo</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="how" class="section how">
+      <div class="container">
+        <h2>How it works</h2>
+        <ol class="steps">
+          <li><strong>Strategy:</strong> We define goals, audience, and KPIs.</li>
+          <li><strong>Build:</strong> Design, develop, and craft playable demos and site content.</li>
+          <li><strong>Launch & Optimize:</strong> Deploy, run ads, measure, and iterate.</li>
+        </ol>
+      </div>
+    </section>
+
+    <section id="pricing" class="section">
+      <div class="container">
+        <h2>Packages</h2>
+        <div class="grid pricing-grid">
+          <div class="card">
+            <h3>Starter</h3>
+            <p>Landing page + basic playable demo + ad creative (3 variants).</p>
+            <p class="price">$1,200</p>
+          </div>
+          <div class="card">
+            <h3>Studio</h3>
+            <p>Multi-page site + playable demo + ad campaign setup + analytics.</p>
+            <p class="price">$3,500</p>
+          </div>
+          <div class="card">
+            <h3>Premium</h3>
+            <p>Custom game demo, full site, retainer for ad operations and optimization.</p>
+            <p class="price">$8,500+</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="section contact">
+      <div class="container">
+        <h2>Contact</h2>
+        <p>Ready to start? Send a message or book a free strategy call.</p>
+        <form id="contactForm" class="contact-form" method="POST">
+          <label>Full name <input name="name" required></label>
+          <label>Email <input name="email" type="email" required></label>
+          <label>Message <textarea name="message" rows="4" required></textarea></label>
+          <input type="hidden" name="_subject" value="New contact from website" />
+          <div class="form-actions">
+            <button type="submit" class="btn primary">Send Message</button>
+            <a class="mailto" href="mailto:contact@marhoapuyor-creator.com?subject=Website%20Inquiry">Or email us</a>
+          </div>
+          <p id="formStatus" class="muted"></p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container small">
+      <p>© Marhoapuyor Studio — Games & Websites</p>
+      <p class="muted">Built and deployed with GitHub Pages • <a href="https://github.com/marhoapuyor-creator/game-site">Repo</a></p>
+    </div>
+  </footer>
+
+  <script>window.FORM_ENDPOINT = ""; // Set to your Formspree endpoint if you have one (e.g. https://formspree.io/f/your-id)</script>
+  <script src="/js/game-loader.js"></script>
+</body>
+</html>

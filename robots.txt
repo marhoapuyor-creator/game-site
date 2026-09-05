@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://marhoapuyor-creator.github.io/game-site/sitemap.xml
