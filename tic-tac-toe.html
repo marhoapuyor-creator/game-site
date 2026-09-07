@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .game-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 30px;
+            text-align: center;
+            max-width: 500px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 2.5em;
+        }
+
+        .status {
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #e8f4f8;
+            border-left: 4px solid #3498db;
+            border-radius: 8px;
+            color: #2c3e50;
+            min-height: 30px;
+        }
+
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 30px;
+            background: #667eea;
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        .cell {
+            width: 100px;
+            height: 100px;
+            background: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 2em;
+            font-weight: bold;
+            cursor: pointer;
+            color: #667eea;
+            transition: all 0.3s;
+        }
+
+        .cell:hover {
+            background: #f0f0f0;
+            transform: scale(0.95);
+        }
+
+        .cell:active {
+            transform: scale(0.9);
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 25px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-transform: uppercase;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .score-display {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+            font-size: 1.1em;
+        }
+
+        .score-item {
+            background: #ecf0f1;
+            padding: 15px;
+            border-radius: 8px;
+            color: #333;
+        }
+
+        .score-item strong {
+            display: block;
+            font-size: 1.5em;
+            color: #667eea;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>🎮 Tic Tac Toe</h1>
+        
+        <div class="status" id="status">You are X, AI is O. Make your move!</div>
+
+        <div class="board" id="board">
+            <button class="cell" onclick="makeMove(0)"></button>
+            <button class="cell" onclick="makeMove(1)"></button>
+            <button class="cell" onclick="makeMove(2)"></button>
+            <button class="cell" onclick="makeMove(3)"></button>
+            <button class="cell" onclick="makeMove(4)"></button>
+            <button class="cell" onclick="makeMove(5)"></button>
+            <button class="cell" onclick="makeMove(6)"></button>
+            <button class="cell" onclick="makeMove(7)"></button>
+            <button class="cell" onclick="makeMove(8)"></button>
+        </div>
+
+        <div class="controls">
+            <button onclick="resetGame()">New Game</button>
+        </div>
+
+        <div class="score-display">
+            <div class="score-item">
+                You (X)
+                <strong id="playerWins">0</strong>
+            </div>
+            <div class="score-item">
+                Draws
+                <strong id="draws">0</strong>
+            </div>
+            <div class="score-item">
+                AI (O)
+                <strong id="aiWins">0</strong>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let board = Array(9).fill(null);
+        let currentPlayer = 'X';
+        let gameActive = true;
+        let playerWins = 0;
+        let aiWins = 0;
+        let draws = 0;
+
+        const winningCombinations = [
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8],
+            [0, 3, 6],
+            [1, 4, 7],
+            [2, 5, 8],
+            [0, 4, 8],
+            [2, 4, 6]
+        ];
+
+        function makeMove(index) {
+            if (!gameActive || board[index] !== null) return;
+
+            board[index] = 'X';
+            currentPlayer = 'O';
+            updateBoard();
+
+            if (checkWinner('X')) {
+                updateStatus('🎉 You Win!');
+                gameActive = false;
+                playerWins++;
+                document.getElementById('playerWins').textContent = playerWins;
+                return;
+            }
+
+            if (isBoardFull()) {
+                updateStatus('🤝 It\'s a Draw!');
+                gameActive = false;
+                draws++;
+                document.getElementById('draws').textContent = draws;
+                return;
+            }
+
+            setTimeout(() => {
+                aiMove();
+            }, 500);
+        }
+
+        function aiMove() {
+            if (!gameActive) return;
+
+            // Try to win
+            for (let i = 0; i < 9; i++) {
+                if (board[i] === null) {
+                    board[i] = 'O';
+                    if (checkWinner('O')) {
+                        updateBoard();
+                        updateStatus('😢 AI Wins!');
+                        gameActive = false;
+                        aiWins++;
+                        document.getElementById('aiWins').textContent = aiWins;
+                        return;
+                    }
+                    board[i] = null;
+                }
+            }
+
+            // Try to block player
+            for (let i = 0; i < 9; i++) {
+                if (board[i] === null) {
+                    board[i] = 'X';
+                    if (checkWinner('X')) {
+                        board[i] = 'O';
+                        updateBoard();
+                        currentPlayer = 'X';
+                        updateStatus('Your turn!');
+                        return;
+                    }
+                    board[i] = null;
+                }
+            }
+
+            // Take center if available
+            if (board[4] === null) {
+                board[4] = 'O';
+                updateBoard();
+                currentPlayer = 'X';
+                if (isBoardFull()) {
+                    updateStatus('🤝 It\'s a Draw!');
+                    gameActive = false;
+                    draws++;
+                    document.getElementById('draws').textContent = draws;
+                } else {
+                    updateStatus('Your turn!');
+                }
+                return;
+            }
+
+            // Take corner
+            const corners = [0, 2, 6, 8];
+            const availableCorners = corners.filter(i => board[i] === null);
+            if (availableCorners.length > 0) {
+                const move = availableCorners[Math.floor(Math.random() * availableCorners.length)];
+                board[move] = 'O';
+                updateBoard();
+                currentPlayer = 'X';
+                if (isBoardFull()) {
+                    updateStatus('🤝 It\'s a Draw!');
+                    gameActive = false;
+                    draws++;
+                    document.getElementById('draws').textContent = draws;
+                } else {
+                    updateStatus('Your turn!');
+                }
+                return;
+            }
+
+            // Take any available space
+            for (let i = 0; i < 9; i++) {
+                if (board[i] === null) {
+                    board[i] = 'O';
+                    updateBoard();
+                    currentPlayer = 'X';
+                    if (isBoardFull()) {
+                        updateStatus('🤝 It\'s a Draw!');
+                        gameActive = false;
+                        draws++;
+                        document.getElementById('draws').textContent = draws;
+                    } else {
+                        updateStatus('Your turn!');
+                    }
+                    return;
+                }
+            }
+        }
+
+        function checkWinner(player) {
+            return winningCombinations.some(combination =>
+                combination.every(index => board[index] === player)
+            );
+        }
+
+        function isBoardFull() {
+            return board.every(cell => cell !== null);
+        }
+
+        function updateBoard() {
+            const cells = document.querySelectorAll('.cell');
+            cells.forEach((cell, index) => {
+                cell.textContent = board[index] || '';
+                cell.disabled = board[index] !== null || !gameActive;
+            });
+        }
+
+        function updateStatus(message) {
+            document.getElementById('status').textContent = message;
+        }
+
+        function resetGame() {
+            board = Array(9).fill(null);
+            currentPlayer = 'X';
+            gameActive = true;
+            updateBoard();
+            updateStatus('You are X, AI is O. Make your move!');
+        }
+
+        updateBoard();
+    </script>
+</body>
+</html>
