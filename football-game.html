@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Football Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .game-container {
+            width: 100%;
+            max-width: 900px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 30px;
+        }
+
+        .game-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .game-header h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .scoreboard {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            font-size: 1.5em;
+        }
+
+        .score-section {
+            text-align: center;
+        }
+
+        .score-number {
+            font-size: 2em;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .field {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(to bottom, #2d5016 0%, #3d6b20 50%, #2d5016 100%);
+            border: 3px solid #fff;
+            position: relative;
+            margin-bottom: 30px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .field-line {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .center-line {
+            width: 2px;
+            height: 100%;
+            left: 50%;
+            top: 0;
+        }
+
+        .yard-line {
+            width: 100%;
+            height: 1px;
+            opacity: 0.5;
+        }
+
+        .center-circle {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .end-zone {
+            position: absolute;
+            width: 100%;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px dashed rgba(255, 255, 255, 0.5);
+            font-size: 0.8em;
+            color: rgba(255, 255, 255, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .end-zone.top {
+            top: 0;
+        }
+
+        .end-zone.bottom {
+            bottom: 0;
+        }
+
+        .player {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 12px;
+            cursor: move;
+            transition: all 0.1s;
+        }
+
+        .player.user {
+            background: #3498db;
+            box-shadow: 0 0 10px rgba(52, 152, 219, 0.5);
+        }
+
+        .player.ai {
+            background: #e74c3c;
+            box-shadow: 0 0 10px rgba(231, 76, 60, 0.5);
+        }
+
+        .ball {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle at 30% 30%, #f9e79f, #d4a017);
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 12px 20px;
+            font-size: 1em;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            text-transform: uppercase;
+        }
+
+        .btn-play {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-play:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-play:active {
+            transform: translateY(0);
+        }
+
+        .btn-reset {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .btn-reset:hover {
+            background: #7f8c8d;
+        }
+
+        .status {
+            font-size: 1.2em;
+            text-align: center;
+            padding: 15px;
+            background: #ecf0f1;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            min-height: 30px;
+            color: #333;
+        }
+
+        .status.info {
+            background: #d4efdf;
+            color: #186a3b;
+        }
+
+        .status.warning {
+            background: #fdeaa8;
+            color: #7d6608;
+        }
+
+        .controls-info {
+            background: #e8f4f8;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border-left: 4px solid #3498db;
+        }
+
+        .controls-info h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .controls-info p {
+            color: #34495e;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="game-header">
+            <h1>🏈 Football Game</h1>
+            <p>Score touchdowns and become the champion!</p>
+        </div>
+
+        <div class="scoreboard">
+            <div class="score-section">
+                <div>Your Team</div>
+                <div class="score-number" id="userScore">0</div>
+            </div>
+            <div class="score-section">
+                <div>Quarter</div>
+                <div class="score-number" id="quarter">1</div>
+            </div>
+            <div class="score-section">
+                <div>AI Team</div>
+                <div class="score-number" id="aiScore">0</div>
+            </div>
+        </div>
+
+        <div class="status" id="status">Click "Start Game" to begin!</div>
+
+        <div class="field" id="field">
+            <div class="field-line center-line"></div>
+            <div class="center-circle"></div>
+            <div class="end-zone top">END ZONE</div>
+            <div class="end-zone bottom">END ZONE</div>
+        </div>
+
+        <div class="controls">
+            <button class="btn-play" onclick="startGame()">Start Game</button>
+            <button class="btn-play" onclick="movePlayer('up')">⬆️ Up</button>
+            <button class="btn-play" onclick="movePlayer('down')">⬇️ Down</button>
+            <button class="btn-play" onclick="movePlayer('left')">⬅️ Left</button>
+            <button class="btn-play" onclick="movePlayer('right')">➡️ Right</button>
+            <button class="btn-play" onclick="pass()">🎯 Pass</button>
+            <button class="btn-play" onclick="tackle()">💥 Tackle</button>
+            <button class="btn-reset" onclick="resetGame()">Reset Game</button>
+        </div>
+
+        <div class="controls-info">
+            <h3>How to Play:</h3>
+            <p>✅ Use arrow buttons to move your player</p>
+            <p>✅ Click "Pass" to throw the ball to score</p>
+            <p>✅ Click "Tackle" to defend against AI</p>
+            <p>✅ Score a touchdown (6 points) by reaching the end zone with the ball</p>
+            <p>✅ Play 4 quarters and try to outscore the AI!</p>
+        </div>
+    </div>
+
+    <script>
+        // Game State
+        let gameState = {
+            userScore: 0,
+            aiScore: 0,
+            quarter: 1,
+            ballOwner: 'user', // 'user' or 'ai'
+            gameActive: false,
+            ballPosition: { x: 450, y: 200 },
+            userPosition: { x: 350, y: 200 },
+            aiPosition: { x: 550, y: 250 },
+            downCount: 0,
+            yardsGained: 0
+        };
+
+        const field = document.getElementById('field');
+        const statusDiv = document.getElementById('status');
+        const FIELD_WIDTH = field.offsetWidth;
+        const FIELD_HEIGHT = field.offsetHeight;
+        const MOVE_DISTANCE = 30;
+
+        function startGame() {
+            gameState.gameActive = true;
+            gameState.ballOwner = 'user';
+            gameState.downCount = 0;
+            gameState.yardsGained = 0;
+            updateStatus('Game Started! Protect the ball and reach the end zone!');
+            render();
+        }
+
+        function movePlayer(direction) {
+            if (!gameState.gameActive) return;
+
+            const speed = MOVE_DISTANCE;
+            const newPos = { ...gameState.userPosition };
+
+            switch (direction) {
+                case 'up':
+                    newPos.y = Math.max(0, newPos.y - speed);
+                    break;
+                case 'down':
+                    newPos.y = Math.min(FIELD_HEIGHT - 30, newPos.y + speed);
+                    break;
+                case 'left':
+                    newPos.x = Math.max(0, newPos.x - speed);
+                    break;
+                case 'right':
+                    newPos.x = Math.min(FIELD_WIDTH - 30, newPos.x + speed);
+                    break;
+            }
+
+            gameState.userPosition = newPos;
+
+            if (gameState.ballOwner === 'user') {
+                gameState.ballPosition = { ...newPos };
+                gameState.yardsGained += Math.abs(MOVE_DISTANCE);
+            }
+
+            checkTouchdown();
+            checkTackle();
+            aiMove();
+            render();
+        }
+
+        function pass() {
+            if (!gameState.gameActive || gameState.ballOwner !== 'user') {
+                updateStatus('You don\'t have the ball!');
+                return;
+            }
+
+            // Simulate a pass - move ball forward
+            gameState.ballPosition.x = Math.min(FIELD_WIDTH - 10, gameState.ballPosition.x + 100);
+            gameState.yardsGained += 100;
+            gameState.downCount++;
+
+            if (gameState.downCount >= 4) {
+                gameState.ballOwner = 'ai';
+                gameState.downCount = 0;
+                updateStatus('Turnover on downs! AI has the ball!');
+            } else {
+                updateStatus(`Pass thrown! Down ${gameState.downCount + 1}/4`);
+            }
+
+            checkTouchdown();
+            aiMove();
+            render();
+        }
+
+        function tackle() {
+            if (!gameState.gameActive || gameState.ballOwner !== 'ai') {
+                updateStatus('You can only tackle when AI has the ball!');
+                return;
+            }
+
+            const distance = Math.hypot(
+                gameState.userPosition.x - gameState.aiPosition.x,
+                gameState.userPosition.y - gameState.aiPosition.y
+            );
+
+            if (distance < 80) {
+                gameState.ballOwner = 'user';
+                gameState.downCount = 0;
+                updateStatus('Great tackle! You recovered the ball!');
+            } else {
+                updateStatus('Tackle missed! Get closer to the AI player!');
+            }
+
+            render();
+        }
+
+        function aiMove() {
+            if (gameState.ballOwner !== 'ai') return;
+
+            // Simple AI logic
+            if (gameState.aiPosition.y > gameState.ballPosition.y + 20) {
+                gameState.aiPosition.y -= 20;
+            } else if (gameState.aiPosition.y < gameState.ballPosition.y - 20) {
+                gameState.aiPosition.y += 20;
+            }
+
+            gameState.aiPosition.x = Math.min(FIELD_WIDTH - 30, gameState.aiPosition.x + 25);
+            gameState.ballPosition = { ...gameState.aiPosition };
+
+            if (Math.random() > 0.7) {
+                gameState.downCount++;
+                if (gameState.downCount >= 4) {
+                    gameState.ballOwner = 'user';
+                    gameState.downCount = 0;
+                    updateStatus('AI turnover on downs! You have the ball!');
+                }
+            }
+
+            checkTouchdown();
+        }
+
+        function checkTouchdown() {
+            if (gameState.ballPosition.y < 60 && gameState.ballOwner === 'user') {
+                gameState.userScore += 6;
+                updateStatus('🎉 TOUCHDOWN! User scores 6 points!');
+                resetBall();
+            } else if (gameState.ballPosition.y > FIELD_HEIGHT - 60 && gameState.ballOwner === 'ai') {
+                gameState.aiScore += 6;
+                updateStatus('🎉 TOUCHDOWN! AI scores 6 points!');
+                resetBall();
+            }
+        }
+
+        function checkTackle() {
+            const distance = Math.hypot(
+                gameState.userPosition.x - gameState.aiPosition.x,
+                gameState.userPosition.y - gameState.aiPosition.y
+            );
+
+            if (distance < 50 && gameState.ballOwner === 'ai') {
+                gameState.ballOwner = 'user';
+                updateStatus('Defense! You recovered the ball!');
+            }
+        }
+
+        function resetBall() {
+            gameState.ballPosition = { x: FIELD_WIDTH / 2, y: FIELD_HEIGHT / 2 };
+            gameState.userPosition = { x: FIELD_WIDTH / 2 - 100, y: FIELD_HEIGHT / 2 };
+            gameState.aiPosition = { x: FIELD_WIDTH / 2 + 100, y: FIELD_HEIGHT / 2 };
+            gameState.ballOwner = 'user';
+            gameState.downCount = 0;
+            gameState.yardsGained = 0;
+
+            if (gameState.quarter < 4) {
+                gameState.quarter++;
+            } else {
+                endGame();
+            }
+        }
+
+        function endGame() {
+            gameState.gameActive = false;
+            const winner = gameState.userScore > gameState.aiScore ? 'You win!' : 
+                          gameState.userScore < gameState.aiScore ? 'AI wins!' : 'It\'s a tie!';
+            updateStatus(`Game Over! Final Score: You ${gameState.userScore} - AI ${gameState.aiScore}. ${winner}`);
+        }
+
+        function updateStatus(message) {
+            statusDiv.textContent = message;
+            statusDiv.className = 'status info';
+        }
+
+        function resetGame() {
+            gameState = {
+                userScore: 0,
+                aiScore: 0,
+                quarter: 1,
+                ballOwner: 'user',
+                gameActive: false,
+                ballPosition: { x: FIELD_WIDTH / 2, y: FIELD_HEIGHT / 2 },
+                userPosition: { x: FIELD_WIDTH / 2 - 100, y: FIELD_HEIGHT / 2 },
+                aiPosition: { x: FIELD_WIDTH / 2 + 100, y: FIELD_HEIGHT / 2 },
+                downCount: 0,
+                yardsGained: 0
+            };
+            updateStatus('Game reset! Click "Start Game" to begin!');
+            render();
+        }
+
+        function render() {
+            // Clear field of players and ball
+            const existingPlayers = field.querySelectorAll('.player, .ball');
+            existingPlayers.forEach(el => el.remove());
+
+            // Render ball
+            const ballEl = document.createElement('div');
+            ballEl.className = 'ball';
+            ballEl.style.left = gameState.ballPosition.x + 'px';
+            ballEl.style.top = gameState.ballPosition.y + 'px';
+            field.appendChild(ballEl);
+
+            // Render user player
+            const userEl = document.createElement('div');
+            userEl.className = 'player user';
+            userEl.textContent = '👤';
+            userEl.style.left = gameState.userPosition.x + 'px';
+            userEl.style.top = gameState.userPosition.y + 'px';
+            field.appendChild(userEl);
+
+            // Render AI player
+            const aiEl = document.createElement('div');
+            aiEl.className = 'player ai';
+            aiEl.textContent = '🤖';
+            aiEl.style.left = gameState.aiPosition.x + 'px';
+            aiEl.style.top = gameState.aiPosition.y + 'px';
+            field.appendChild(aiEl);
+
+            // Update scoreboard
+            document.getElementById('userScore').textContent = gameState.userScore;
+            document.getElementById('aiScore').textContent = gameState.aiScore;
+            document.getElementById('quarter').textContent = gameState.quarter;
+        }
+
+        // Initial render
+        render();
+    </script>
+</body>
+</html>
